@@ -7,20 +7,23 @@ import (
 	"strings"
 )
 
-func T() {
-	b := "{'a' : 'b'}"
-	stringReader := strings.NewReader(b)
-	// fmt.Println(n, err)
+func Hit(method, base, ep, body string) (int64, string) {
 
+	bodyReader := strings.NewReader(body)
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://api.writups.tech/", stringReader)
+
+	// Add url params in ep
+	fmt.Println(method, base+ep, body)
+	req, err := http.NewRequest(method, base+ep, bodyReader)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
 
 	resp, err := client.Do(req)
+
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -30,6 +33,5 @@ func T() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
-	fmt.Println(string(bodyBytes))
+	return 0, string(bodyBytes)
 }
