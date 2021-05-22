@@ -1,2 +1,2 @@
-# fatigu
+# Strainbot
 API Performace Testing Tool
