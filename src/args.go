@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -8,16 +9,20 @@ import (
 )
 
 type Arguments struct {
-	s              bool   // Singleton Mode
-	b              bool   // Batch Mode
-	base           string // Base URL
-	ep             string // [Method Endpoind]
-	method         string // comma separated list of methods
-	body           string // body to pass
-	bodyFile       string // path to json file containing body
-	hits           int64  // number of concurrent hits to perform
-	configFilePath string // path to config file
-	logFile        string // file to write logs
+	s bool // Singleton Mode
+	b bool // Batch Mode
+
+	base           string            // Base URL
+	ep             string            // [Method Endpoind]
+	method         string            // comma separated list of methods
+	header         string            // json parsable string in form '{"key":"value"}'
+	parsedHeader   map[string]string // Actual parsed headers.
+	body           string            // body to pass
+	bodyFile       string            // path to json file containing body
+	configFilePath string            // path to config file
+	logFile        string            // file to write logs
+
+	hits int64 // number of concurrent hits to perform
 }
 
 func ParseArgs(values Arguments) Arguments {
@@ -29,29 +34,35 @@ func ParseArgs(values Arguments) Arguments {
 	flag.StringVar(&values.body, "body", "", "Body to send in API call.")
 	flag.StringVar(&values.bodyFile, "body-file", "", "Path to json file to use as body content.")
 	flag.StringVar(&values.configFilePath, "config-file", "", "Path to config file. Required only in case of batch mode.")
-	flag.Int64Var(&values.hits, "hits", 1000, "Number of concurrent hits to perform.")
 	flag.StringVar(&values.logFile, "log-file", "", "File to write logs.")
+	flag.StringVar(&values.header, "headers", "{}", "Headers for request in form of key-value pair. (Valid JSON)")
+
+	flag.Int64Var(&values.hits, "hits", 1000, "Number of concurrent hits to perform.")
+
 	flag.Parse()
+
 	return values
 }
 
 func (a Arguments) String() string {
 	var repr = strings.Builder{}
-	repr.Grow(1000)
-	repr.WriteString(strings.Repeat("-", 56) + "\n")
-	repr.WriteString(fmt.Sprintf("| %-20s | %-30s|\n", "Flag", "Value"))
-	repr.WriteString(strings.Repeat("-", 56) + "\n")
-	repr.WriteString(fmt.Sprintf("| %-20s | %-30v|\n", "Singleton Mode", a.s))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-30v|\n", "Batch Mode", a.b))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-30v|\n", "Base URL", a.base))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-30v|\n", "Endpoint", a.ep))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-30v|\n", "Methods", a.method))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-30v|\n", "Body", a.body))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-30v|\n", "Body File", a.bodyFile))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-30v|\n", "Config File", a.configFilePath))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-30v|\n", "Concurrent Hits", a.hits))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-30v|\n", "Log File", a.logFile))
-	repr.WriteString(strings.Repeat("-", 56) + "\n")
+	repr.Grow(1200)
+	repr.WriteString(strings.Repeat("-", 76) + "\n")
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50s|\n", "Flag", "Value"))
+	repr.WriteString(strings.Repeat("-", 76) + "\n")
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Singleton Mode", a.s))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Batch Mode", a.b))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Base URL", a.base))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Endpoint", a.ep))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Methods", a.method))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Headers", a.header))
+	// repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Parsed Headers", a.parsedHeader))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Body", a.body))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Body File", a.bodyFile))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Config File", a.configFilePath))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Concurrent Hits", a.hits))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Log File", a.logFile))
+	repr.WriteString(strings.Repeat("-", 76) + "\n")
 
 	return repr.String()
 }
@@ -89,6 +100,13 @@ func ValidateArgs(values Arguments) Arguments {
 	if values.base[len(values.base)-1] == '/' && values.ep == "" {
 		values.base = values.base[0 : len(values.base)-1]
 		values.ep = "/"
+	}
+
+	// Parsing header flag value (JSON) as map.
+	err := json.Unmarshal([]byte(values.header), &values.parsedHeader)
+	if err != nil {
+		fmt.Println(err.Error())
+		values.parsedHeader = map[string]string{}
 	}
 	return values
 }

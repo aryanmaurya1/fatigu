@@ -16,8 +16,8 @@ func main() {
 	// Arguments parsing and validation
 	var values Arguments
 	values = ParseArgs(values)
-	fmt.Println(values)
 	values = ValidateArgs(values)
+	fmt.Println(values)
 
 	holder = new(sync.WaitGroup)
 

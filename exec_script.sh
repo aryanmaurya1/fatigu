@@ -7,5 +7,8 @@ go build -o ../fatigu
 # --hits 1000 --method POST --ep /user 
 cd ..
 ./fatigu -s \
---hits 10 --method GET --ep /todos/1 \
---base https://jsonplaceholder.typicode.com
+--hits 100 \
+--method GET \
+--base https://jsonplaceholder.typicode.com \
+--ep /todos/1 \
+--headers '{"h1" : "v1", "h2" : "v2"}'
