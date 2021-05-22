@@ -56,12 +56,17 @@ func ValidateArgs(values Arguments) {
 		panic("Please provide a mode for execution.")
 	} else if values.s && values.b {
 		panic("Please provide a single mode of execution.")
-	} else if len(values.body) > 0 && len(values.bodyFile) > 0 {
-		panic("Please provide only one arg for body.")
 	} else if values.b && len(values.configFilePath) == 0 {
 		panic("Please provide a config for batch mode execution.")
-	} else if values.method == "" {
-		panic("Please provide proper methods.")
-	} else {
+	}
+
+	if values.configFilePath == "" {
+		if len(values.body) > 0 && len(values.bodyFile) > 0 {
+			panic("Please provide only one arg for body.")
+		} else if values.method == "" {
+			panic("Please provide proper methods.")
+		} else if values.base == "" {
+			panic("Please provide a base URL.")
+		}
 	}
 }
