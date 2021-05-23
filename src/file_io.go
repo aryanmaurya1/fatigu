@@ -25,7 +25,7 @@ func ReadFile(path string) []byte {
 func GetParsedValues(data []byte) map[string]interface{} {
 
 	var parsedValue map[string]interface{}
-	err := json.Unmarshal(data, parsedValue)
+	err := json.Unmarshal(data, &parsedValue)
 	if err != nil {
 		fmt.Println(err)
 	}
