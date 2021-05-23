@@ -24,17 +24,19 @@ func createRequest(method, url string, headers map[string]string, body io.Reader
 	return req
 }
 
-func Hit(method, url, body string, headers map[string]string) (int64, []byte) {
+func Hit(method, url, body string, headers map[string]string) (Metric, []byte) {
 
+	metric := Metric{}
 	bodyReader := strings.NewReader(body)
+
 	client := &http.Client{}
 
 	// creating request object
 	req := createRequest(method, url, headers, bodyReader)
 
-	start := time.Now().UnixNano()
+	metric.Start = time.Now().UnixNano()
 	resp, err := client.Do(req)
-	end := time.Now().UnixNano()
+	metric.End = time.Now().UnixNano()
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -45,9 +47,10 @@ func Hit(method, url, body string, headers map[string]string) (int64, []byte) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	metric.Elasped = metric.End - metric.Start
+	metric.ElaspedInms = (metric.Elasped) / int64(time.Millisecond)
 
-	time := (end - start) / int64(time.Millisecond)
-	fmt.Println("Time : ", time, "ms")
+	fmt.Println("Time : ", metric.ElaspedInms, "ms")
 	// fmt.Println(string(bodyBytes))
-	return time, bodyBytes
+	return metric, bodyBytes
 }
