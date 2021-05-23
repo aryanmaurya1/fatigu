@@ -4,11 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
-	"sync"
 	"time"
 )
-
-var holder *sync.WaitGroup
 
 func main() {
 
@@ -27,14 +24,11 @@ func main() {
 	if (userResp != "y") && (userResp != "Y") {
 		os.Exit(0)
 	}
-
+	requstConfigData := GetRequestConfigurationFromArgs(values)
 	// Processing based on the mode.
 	if values.s {
-		singleshot(values)
+		singleshot(requstConfigData)
 	}
 
-	if len(values.logFile) > 0 {
-		// write logic for log writing
-	}
-
+	// Handle writing to log file
 }
