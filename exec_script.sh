@@ -1,14 +1,22 @@
 cd src
 go fmt *.go 
-go build -o ../fatigu
-# ./fatigu -s \
-# --body '{"name" : "Aryan"}' \
-# --base https://api.writups.tech \
-# --hits 1000 --method POST --ep /user 
+go build -o ../strainbot
+
 cd ..
-./fatigu -s \
---hits 100 \
---method GET \
---base https://jsonplaceholder.typicode.com \
---ep /todos/1 \
---headers '{"h1" : "v1", "h2" : "v2"}'
+
+./strainbot -s \
+--body '{"name" : "Aryan"}' \
+--hits 10 \
+--method POST \
+--base https://api.writups.tech \
+--ep /user \
+--headers '{"h1" : "v1", "h2" : "v2"}' \
+--log-file  kjdsk      
+
+
+# ./strainbot -s \
+# --hits 100 \
+# --method GET \
+# --base https://jsonplaceholder.typicode.com \
+# --ep /todos/1 \
+# --headers '{"h1" : "v1", "h2" : "v2"}'

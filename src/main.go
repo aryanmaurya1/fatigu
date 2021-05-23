@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"sync"
 	"time"
 )
@@ -19,19 +20,21 @@ func main() {
 	values = ValidateArgs(values)
 	fmt.Println(values)
 
-	holder = new(sync.WaitGroup)
-
-	for i := 0; i < int(values.hits); i++ {
-		// methods := []string{"GET", "POST"}
-		// ep := []string{"/", "/user", "/user/" + fmt.Sprintf("%d", time.Now().UnixNano())}
-
-		go func(holder *sync.WaitGroup) {
-			// Hit(methods[rand.Int()%2], values.base, ep[rand.Int()%3], values.body)
-			Hit(values.method, values.base+values.ep, values.body, nil)
-			holder.Done()
-		}(holder)
-		holder.Add(1)
-
+	// Validating configs from user
+	var userResp string
+	fmt.Printf("Is above mentioned config is valid ? [Y|N] : ")
+	fmt.Scanf("%s", &userResp)
+	if (userResp != "y") && (userResp != "Y") {
+		os.Exit(0)
 	}
-	holder.Wait()
+
+	// Processing based on the mode.
+	if values.s {
+		singleshot(values)
+	}
+
+	if len(values.logFile) > 0 {
+		// write logic for log writing
+	}
+
 }

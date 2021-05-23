@@ -24,7 +24,7 @@ func createRequest(method, url string, headers map[string]string, body io.Reader
 	return req
 }
 
-func Hit(method, url, body string, headers map[string]string) (int64, string) {
+func Hit(method, url, body string, headers map[string]string) (int64, []byte) {
 
 	bodyReader := strings.NewReader(body)
 	client := &http.Client{}
@@ -49,5 +49,5 @@ func Hit(method, url, body string, headers map[string]string) (int64, string) {
 	time := (end - start) / int64(time.Millisecond)
 	fmt.Println("Time : ", time, "ms")
 	// fmt.Println(string(bodyBytes))
-	return time, string(bodyBytes)
+	return time, bodyBytes
 }

@@ -9,7 +9,7 @@ import (
 )
 
 type Arguments struct {
-	s bool // Singleton Mode
+	s bool // Singleshot Mode
 	b bool // Batch Mode
 
 	base           string            // Base URL
@@ -26,8 +26,8 @@ type Arguments struct {
 }
 
 func ParseArgs(values Arguments) Arguments {
-	flag.BoolVar(&values.s, "s", false, "Runs fatigu in singleton mode.")
-	flag.BoolVar(&values.b, "b", false, "Runs fatigu in Batch mode. Path to config file must be given.")
+	flag.BoolVar(&values.s, "s", false, "Runs in singleshot mode.")
+	flag.BoolVar(&values.b, "b", false, "Runs in Batch mode. Path to config file must be given.")
 	flag.StringVar(&values.base, "base", "", "Base URL of API.")
 	flag.StringVar(&values.ep, "ep", "", "Endpoint to hit. [Base + Endpoint]")
 	flag.StringVar(&values.method, "method", "GET", "Comma separated list of methods to use.")
@@ -46,12 +46,16 @@ func ParseArgs(values Arguments) Arguments {
 
 func (a Arguments) String() string {
 	var repr = strings.Builder{}
+	executionMode := "singleshot"
+	if a.b {
+		executionMode = "Batch"
+	}
 	repr.Grow(1200)
 	repr.WriteString(strings.Repeat("-", 76) + "\n")
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50s|\n", "Flag", "Value"))
 	repr.WriteString(strings.Repeat("-", 76) + "\n")
-	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Singleton Mode", a.s))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Batch Mode", a.b))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Execution Mode", executionMode))
+	// repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Batch Mode", a.b))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Base URL", a.base))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Endpoint", a.ep))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Methods", a.method))
@@ -87,7 +91,7 @@ func ValidateArgs(values Arguments) Arguments {
 		log.Fatal("Please provide either body-file or config-file")
 	}
 
-	// validating presence of args in singleton mode
+	// validating presence of args in Singleshot mode
 	if values.configFilePath == "" {
 		if values.method == "" {
 			log.Fatal("Please provide proper methods.")
