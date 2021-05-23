@@ -62,8 +62,13 @@ func (a Arguments) String() string {
 
 	repr.Grow(1200)
 	repr.WriteString(strings.Repeat("-", 76) + "\n")
+	// -------------------------------------------------------------------------------------
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50s|\n", "Flag", "Value"))
+	// -------------------------------------------------------------------------------------
+
 	repr.WriteString(strings.Repeat("-", 76) + "\n")
+
+	// -------------------------------------------------------------------------------------
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Execution Mode", executionMode))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Logging Mode", loggingMode))
 	// repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Batch Mode", a.b))
@@ -77,6 +82,8 @@ func (a Arguments) String() string {
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Config File", a.configFilePath))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Concurrent Hits", a.hits))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Log File", a.logFile))
+	// -------------------------------------------------------------------------------------
+
 	repr.WriteString(strings.Repeat("-", 76) + "\n")
 
 	return repr.String()
