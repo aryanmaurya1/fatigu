@@ -11,6 +11,7 @@ import (
 type Arguments struct {
 	s bool // Singleshot Mode
 	b bool // Batch Mode
+	l bool // logging mode. [Full | Computed]
 
 	base           string            // Base URL
 	ep             string            // [Method Endpoind]
@@ -28,6 +29,8 @@ type Arguments struct {
 func ParseArgs(values Arguments) Arguments {
 	flag.BoolVar(&values.s, "s", false, "Runs in singleshot mode.")
 	flag.BoolVar(&values.b, "b", false, "Runs in Batch mode. Path to config file must be given.")
+	flag.BoolVar(&values.l, "fl", false, "If enabled, full log will be shown.")
+
 	flag.StringVar(&values.base, "base", "", "Base URL of API.")
 	flag.StringVar(&values.ep, "ep", "", "Endpoint to hit. [Base + Endpoint]")
 	flag.StringVar(&values.method, "method", "GET", "Comma separated list of methods to use.")
@@ -46,15 +49,23 @@ func ParseArgs(values Arguments) Arguments {
 
 func (a Arguments) String() string {
 	var repr = strings.Builder{}
+
 	executionMode := "singleshot"
+	loggingMode := "Computed"
+
 	if a.b {
 		executionMode = "Batch"
 	}
+	if a.l {
+		loggingMode = "Full"
+	}
+
 	repr.Grow(1200)
 	repr.WriteString(strings.Repeat("-", 76) + "\n")
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50s|\n", "Flag", "Value"))
 	repr.WriteString(strings.Repeat("-", 76) + "\n")
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Execution Mode", executionMode))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Logging Mode", loggingMode))
 	// repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Batch Mode", a.b))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Base URL", a.base))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Endpoint", a.ep))
