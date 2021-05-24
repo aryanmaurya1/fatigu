@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -25,10 +26,21 @@ func main() {
 		os.Exit(0)
 	}
 	requstConfigData := GetRequestConfigurationFromArgs(values)
+
+	var result strings.Builder = strings.Builder{} // Final logging string
+	result.Grow(1200)
+
 	// Processing based on the mode.
 	if values.s {
-		singleshot(requstConfigData)
+		for i := values.hitStart; i <= values.hitStop; i = i + values.hitStep {
+			requstConfigData.Hits = i
+			metrics := singleshot(requstConfigData)
+			result.WriteString(Analyze(metrics))
+			// fmt.Println(result.String())
+			result.WriteString("\n\n")
+		}
 	}
 
 	// Handle writing to log file
+	fmt.Println(result.String())
 }

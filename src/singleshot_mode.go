@@ -1,14 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"sync"
 )
 
-func singleshot(v RequestConfiguration) {
+func singleshot(v RequestConfiguration) []Metric {
 
 	var holder *sync.WaitGroup = new(sync.WaitGroup)
-	var metrics []Metric
-
+	var metrics []Metric = make([]Metric, 0, v.Hits)
+	fmt.Println(v)
 	for i := int64(0); i < int64(v.Hits); i++ {
 
 		go func(holder *sync.WaitGroup, v RequestConfiguration, id int64) {
@@ -24,4 +25,5 @@ func singleshot(v RequestConfiguration) {
 
 	}
 	holder.Wait()
+	return metrics
 }
