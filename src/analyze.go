@@ -48,9 +48,13 @@ func Analyze(metrics []Metric) string {
 	timeInms := AverageElaspedTime(metrics) / float32(time.Millisecond)
 	result.Grow(1000)
 
-	result.WriteString(fmt.Sprintf("Concurrency : %d \n", len(metrics)))
+	result.WriteString(fmt.Sprintf("\n\n\nConcurrency : %d \n\n", len(metrics)))
+	result.WriteString("MAXIMUM\n")
 	result.WriteString(fmt.Sprintln(MaxElaspedTime(metrics)))
+	result.WriteString("\n")
+	result.WriteString("MINIMUM\n")
 	result.WriteString(fmt.Sprintln(MinElaspedTime(metrics)))
+	result.WriteString("\n")
 	result.WriteString(fmt.Sprintf("Average Time : %.2f ms \n", timeInms))
 
 	return result.String()

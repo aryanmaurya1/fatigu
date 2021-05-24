@@ -12,6 +12,7 @@ type Arguments struct {
 	s bool // Singleshot Mode
 	b bool // Batch Mode
 	l bool // logging mode. [Full | Computed]
+	y bool // Flag to skip initial confirmation
 
 	base           string            // Base URL
 	ep             string            // [Method Endpoind]
@@ -23,13 +24,17 @@ type Arguments struct {
 	configFilePath string            // path to config file
 	logFile        string            // file to write logs
 
-	hits int64 // number of concurrent hits to perform
+	hits     int64 // number of concurrent hits to perform
+	hitStart int64
+	hitStop  int64
+	hitStep  int64
 }
 
 func ParseArgs(values Arguments) Arguments {
-	flag.BoolVar(&values.s, "s", false, "Runs in singleshot mode.")
-	flag.BoolVar(&values.b, "b", false, "Runs in Batch mode. Path to config file must be given.")
-	flag.BoolVar(&values.l, "fl", false, "If enabled, full log will be shown.")
+	flag.BoolVar(&values.s, "s", false, "If set, Runs in singleshot mode.")
+	flag.BoolVar(&values.b, "b", false, "If set, Runs in Batch mode. Path to config file must be given.")
+	flag.BoolVar(&values.l, "fl", false, "If set, shows full logs.")
+	flag.BoolVar(&values.y, "y", false, "If set, skip initial confirmaion.")
 
 	flag.StringVar(&values.base, "base", "", "Base URL of API.")
 	flag.StringVar(&values.ep, "ep", "", "Endpoint to hit. [Base + Endpoint]")
@@ -40,7 +45,10 @@ func ParseArgs(values Arguments) Arguments {
 	flag.StringVar(&values.logFile, "log-file", "", "File to write logs.")
 	flag.StringVar(&values.header, "headers", "{}", "Headers for request in form of key-value pair. (Valid JSON)")
 
-	flag.Int64Var(&values.hits, "hits", 1000, "Number of concurrent hits to perform.")
+	flag.Int64Var(&values.hits, "hits", 10, "Number of concurrent hits to perform.")
+	flag.Int64Var(&values.hitStart, "hit-start", -1, " Starting value of hit range. ([START, STOP, STEP])")
+	flag.Int64Var(&values.hitStop, "hit-stop", -1, "Stoping value of hit range. ([START, STOP, STEP])")
+	flag.Int64Var(&values.hitStep, "hit-step", 10, "Step size to use for excuting range. ([START, STOP, STEP])")
 
 	flag.Parse()
 
@@ -78,10 +86,25 @@ func (a Arguments) String() string {
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Headers", a.header))
 	// repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Parsed Headers", a.parsedHeader))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Body", a.body))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Body File", a.bodyFile))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Config File", a.configFilePath))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Concurrent Hits", a.hits))
-	repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Log File", a.logFile))
+	if a.hitStart == a.hitStop {
+		repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Concurrent Hits", a.hits))
+	} else {
+		repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Start", a.hitStart))
+		repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Stop", a.hitStop))
+		repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Step", a.hitStep))
+	}
+	repr.WriteString(strings.Repeat("-", 76) + "\n")
+	// -------------------------------------------------------------------------------------
+	if a.bodyFile != "" {
+		repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Body File", a.bodyFile))
+
+	}
+	if a.configFilePath != "" {
+		repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Config File", a.configFilePath))
+	}
+	if a.logFile != "" {
+		repr.WriteString(fmt.Sprintf("| %-20s | %-50v|\n", "Log File", a.logFile))
+	}
 	// -------------------------------------------------------------------------------------
 
 	repr.WriteString(strings.Repeat("-", 76) + "\n")
@@ -116,6 +139,14 @@ func ValidateArgs(values Arguments) Arguments {
 		} else if values.base == "" {
 			log.Fatal("Please provide a base URL.")
 		}
+	}
+
+	// Validating hit range
+	if (values.hitStop < values.hitStart) || (values.hitStart < -1) || (values.hitStop < -1) {
+		log.Fatal("Please specify a valid hit range.")
+	} else if values.hitStart == -1 && values.hitStop == -1 && values.hits > 0 {
+		values.hitStart = values.hits
+		values.hitStop = values.hits
 	}
 
 	// Fixing some args value
