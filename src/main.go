@@ -18,13 +18,16 @@ func main() {
 	values = ValidateArgs(values)
 	fmt.Println(values)
 
-	// Validating configs from user
-	var userResp string
-	fmt.Printf("Is above mentioned config is valid ? [Y|N] : ")
-	fmt.Scanf("%s", &userResp)
-	if (userResp != "y") && (userResp != "Y") {
-		os.Exit(0)
+	if !values.y {
+		// Validating configs from user
+		var userResp string
+		fmt.Printf("Is above mentioned config is valid ? [Y|N] : ")
+		fmt.Scanf("%s", &userResp)
+		if (userResp != "y") && (userResp != "Y") {
+			os.Exit(0)
+		}
 	}
+
 	requstConfigData := GetRequestConfigurationFromArgs(values)
 
 	var result strings.Builder = strings.Builder{} // Final logging string
@@ -35,12 +38,13 @@ func main() {
 		for i := values.hitStart; i <= values.hitStop; i = i + values.hitStep {
 			requstConfigData.Hits = i
 			metrics := singleshot(requstConfigData)
-			result.WriteString(Analyze(metrics))
-			// fmt.Println(result.String())
+			analysis := Analyze(metrics)
+			result.WriteString(analysis)
+			fmt.Println(analysis)
 			result.WriteString("\n\n")
 		}
 	}
 
 	// Handle writing to log file
-	fmt.Println(result.String())
+	// fmt.Println(result.String())
 }
