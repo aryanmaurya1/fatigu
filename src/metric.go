@@ -28,7 +28,7 @@ func (m Metric) String() string {
 	repr.WriteString("\n")
 
 	// -------------------------------------------------------------------------------------
-	repr.WriteString(fmt.Sprintf("| %-20s | %-20v |\n", "Metric", "Value"))
+	repr.WriteString(fmt.Sprintf("| %-20s | %-20v |\n", "Metric", "Time"))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-20v |\n", "Routine ID", m.RoutineId))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-20v |\n", "Start Time", m.Start))
 	repr.WriteString(fmt.Sprintf("| %-20s | %-20v |\n", "End Time", m.End))
