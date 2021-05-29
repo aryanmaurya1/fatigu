@@ -4,22 +4,31 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
-	"strings"
 	"time"
 )
 
 func main() {
 
 	rand.Seed(time.Now().UnixNano())
+	var outputBuffer *os.File = os.Stdout
 
 	// Arguments parsing and validation
 	var values Arguments
 	values = ParseArgs(values)
 	values = ValidateArgs(values)
-	fmt.Println(values)
 
+	// Setting up  log file if a valid path is provided
+	logFile := values.logFile
+	if logFile != "" {
+		file, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		HandlerError(err)
+		outputBuffer = file
+
+	}
+
+	// Validating configs from user if 'y' flag is not set.
 	if !values.y {
-		// Validating configs from user
+		fmt.Println(values)
 		var userResp string
 		fmt.Printf("Is above mentioned config is valid ? [Y|N] : ")
 		fmt.Scanf("%s", &userResp)
@@ -27,24 +36,21 @@ func main() {
 			os.Exit(0)
 		}
 	}
+	fmt.Fprintln(outputBuffer, time.Now())
+	_, err := fmt.Fprintln(outputBuffer, values)
+	HandlerError(err)
 
 	requstConfigData := GetRequestConfigurationFromArgs(values)
-
-	var result strings.Builder = strings.Builder{} // Final logging string
-	result.Grow(1200)
 
 	// Processing based on the mode.
 	if values.s {
 		for i := values.hitStart; i <= values.hitStop; i = i + values.hitStep {
 			requstConfigData.Hits = i
-			metrics := singleshot(requstConfigData)
+			metrics := singleshot(requstConfigData, values.l, outputBuffer)
 			analysis := Analyze(metrics)
-			result.WriteString(analysis)
-			fmt.Println(analysis)
-			result.WriteString("\n\n")
+			_, err = fmt.Fprintln(outputBuffer, analysis)
+			HandlerError(err)
 		}
 	}
-
-	// Handle writing to log file
-	// fmt.Println(result.String())
+	outputBuffer.Close()
 }

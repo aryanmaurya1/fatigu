@@ -50,7 +50,5 @@ func Hit(method, url, body string, headers map[string]string) (Metric, []byte) {
 	metric.Elasped = metric.End - metric.Start
 	metric.ElaspedInms = (metric.Elasped) / int64(time.Millisecond)
 
-	fmt.Println("Time : ", metric.ElaspedInms, "ms")
-	// fmt.Println(string(bodyBytes))
 	return metric, bodyBytes
 }
