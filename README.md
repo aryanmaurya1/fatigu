@@ -1,4 +1,4 @@
 # Strainbot
-<img src"./images/Strain.svg>
+<img src="./images/Strain.svg">
 
 API Performace Testing Tool
