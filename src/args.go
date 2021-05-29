@@ -11,7 +11,7 @@ import (
 type Arguments struct {
 	s bool // Singleshot Mode
 	b bool // Batch Mode
-	l bool // logging mode. [Full | Computed]
+	l bool // logging mode. [Full | Computed], if false only Computed.
 	y bool // Flag to skip initial confirmation
 
 	base           string            // Base URL
