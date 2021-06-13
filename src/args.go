@@ -33,7 +33,7 @@ type Arguments struct {
 func ParseArgs(values Arguments) Arguments {
 	flag.BoolVar(&values.s, "s", false, "If set, Runs in singleshot mode.")
 	flag.BoolVar(&values.b, "b", false, "If set, Runs in Batch mode. Path to config file must be given.")
-	flag.BoolVar(&values.l, "fl", false, "If set, shows full logs.")
+	flag.BoolVar(&values.l, "l", false, "If set, shows full logs.")
 	flag.BoolVar(&values.y, "y", false, "If set, skip initial confirmaion.")
 
 	flag.StringVar(&values.base, "base", "", "Base URL of API.")
