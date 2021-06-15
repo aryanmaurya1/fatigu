@@ -43,3 +43,16 @@ To see list of all arguments and parameters required.
 &nbsp;&nbsp;&nbsp;&nbsp; `hits`  Number of concurrent hits to perform. (default 10)
 
 &nbsp;&nbsp;&nbsp;&nbsp; `-method` Comma separated list of methods to use. *Do not include space in list*
+
+### Example 
+
+**$** `./strainbot 
+-s -l 
+--method GET 
+--base https://jsonplaceholder.typicode.com 
+--ep /todos/1 
+--headers '{"h1" : "v1", "h2" : "v2"}' 
+--log-file  logs.sb 
+--hit-start 10 
+--hit-stop 100
+--hit-step 10`
