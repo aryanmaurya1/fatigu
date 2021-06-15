@@ -4,7 +4,7 @@ go build -o ../strainbot
 
 cd ..
 
-./strainbot -s -fl \
+./strainbot -s -l \
 --hits 100 \
 --method GET \
 --base https://jsonplaceholder.typicode.com \
