@@ -7,7 +7,7 @@
 Strainbot is an API Performace Testing and Analysis Tool. Using Strainbot you can perform a number of concurrent request to an endpoint and it will show you detailed analysis of time taken to complete all the requests.
 Basic functionalities are ready to use but it is a work under progress, so some functionalities are not yet implemented.
 
-**Batch mode still is under development**
+**Batch mode is still under development**
 
 Feel free to fork this repository, create pull requests, feature request and report bugs.
 ## Local Compilation
