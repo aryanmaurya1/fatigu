@@ -1,6 +1,6 @@
 # Strainbot
 
-<img src="./images/Strainbot_logo.png">
+<img src="./Strainbot_logo.png">
 
 
 ## About
