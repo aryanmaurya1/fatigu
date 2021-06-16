@@ -1,37 +1,62 @@
-## Welcome to GitHub Pages
+# Strainbot
 
-You can use the [editor on GitHub](https://github.com/aryanmaurya1/strainbot/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+<img src="./images/Strainbot_logo.png">
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+## About
+Strainbot is an API Performace Testing and Analysis Tool. Using Strainbot you can perform a number of concurrent request to an endpoint and it will show you detailed analysis of time taken to complete all the requests.
+Basic functionalities are ready to use but it is a work under progress, so some functionalities are not yet implemented.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+**Batch mode is still under development**
 
-```markdown
-Syntax highlighted code block
+Feel free to fork this repository, create pull requests, feature request and report bugs.
+## Local Compilation
+- Golang compiler must be installed
+- No extra dependencies other than standard library is required.
+- Run **$**`./compile.sh`
 
-# Header 1
-## Header 2
-### Header 3
+## Usage 
+To see list of all arguments and parameters required.
 
-- Bulleted
-- List
+&nbsp;&nbsp;&nbsp;&nbsp;**$** `strainbot -h`  
 
-1. Numbered
-2. List
+&nbsp;&nbsp;&nbsp;&nbsp;**$** `strainbot --help`
 
-**Bold** and _Italic_ and `Code` text
+### Flags and Arguments
 
-[Link](url) and ![Image](src)
-```
+&nbsp;&nbsp;&nbsp;&nbsp; `-l` If set, shows full logs.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+&nbsp;&nbsp;&nbsp;&nbsp; `-log-file` File to write logs.
 
-### Jekyll Themes
+&nbsp;&nbsp;&nbsp;&nbsp; `-base` Base URL of the API.
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/aryanmaurya1/strainbot/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+&nbsp;&nbsp;&nbsp;&nbsp; `-body` Body to send in every request.
 
-### Support or Contact
+&nbsp;&nbsp;&nbsp;&nbsp; `-body-file`  Path to json file to use as body content.
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+&nbsp;&nbsp;&nbsp;&nbsp; `-ep` Endpoint of API to hit. `[URL = BASE + ENDPOINT]`
+
+&nbsp;&nbsp;&nbsp;&nbsp; `-headers`  Headers for request in form of key-value pair. `(Valid JSON) (default "{}")`
+
+&nbsp;&nbsp;&nbsp;&nbsp; `-hit-start` Starting value of hit range. `([START, STOP, STEP]) (default -1)`
+
+&nbsp;&nbsp;&nbsp;&nbsp; `-hit-step` Step size to use for excuting range. `([START, STOP, STEP]) (default 10)`
+
+&nbsp;&nbsp;&nbsp;&nbsp; `-hit-stop` Stoping value of hit range. `([START, STOP, STEP]) (default -1)`
+
+&nbsp;&nbsp;&nbsp;&nbsp; `hits`  Number of concurrent hits to perform. (default 10)
+
+&nbsp;&nbsp;&nbsp;&nbsp; `-method` Comma separated list of methods to use. *Do not include space in list*
+
+### Example 
+
+**$** `./strainbot 
+-s -l 
+--method GET 
+--base https://jsonplaceholder.typicode.com 
+--ep /todos/1 
+--headers '{"h1" : "v1", "h2" : "v2"}' 
+--log-file  logs.sb 
+--hit-start 10 
+--hit-stop 100
+--hit-step 10`
