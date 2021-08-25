@@ -17,15 +17,6 @@ func main() {
 	values = ParseArgs(values)
 	values = ValidateArgs(values)
 
-	// Setting up  log file if a valid path is provided
-	logFile := values.logFile
-	if logFile != "" {
-		file, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		HandlerError(err)
-		outputBuffer = file
-
-	}
-
 	// Validating configs from user if 'y' flag is not set.
 	if !values.y {
 		fmt.Println(values)
@@ -36,11 +27,23 @@ func main() {
 			os.Exit(0)
 		}
 	}
+
+	// Setting up  log file if a valid path is provided
+	logFile := values.logFile
+	if logFile != "" {
+		file, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		HandlerError(err)
+		outputBuffer = file
+
+	}
+
 	fmt.Fprintln(outputBuffer, time.Now())
 	_, err := fmt.Fprintln(outputBuffer, values)
 	HandlerError(err)
 
 	requstConfigData := GetRequestConfigurationFromArgs(values)
+
+	go showSpinner(100 * time.Millisecond) // Show a loading spinner on the terminal
 
 	// Processing based on the mode.
 	if values.s {
