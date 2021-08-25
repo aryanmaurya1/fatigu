@@ -50,7 +50,7 @@ To see list of all arguments and parameters required.
 
 ### Example 
 
-**$** `./strainbot 
+`./strainbot 
 -s -l 
 --method GET 
 --base https://jsonplaceholder.typicode.com 
