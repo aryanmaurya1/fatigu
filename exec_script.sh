@@ -11,7 +11,6 @@ cd ..
 --ep /todos/1 \
 --headers '{"h1" : "v1", "h2" : "v2"}' \
 --log-file  logs.sb \
---hits 100 \
 --hit-start 10 \
---hit-stop 10 \
+--hit-stop 100 \
 --hit-step 10
