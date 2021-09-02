@@ -4,7 +4,7 @@
 
 
 ## About
-Strainbot is an API Performace Testing and Analysis Tool. Using Strainbot you can perform a number of concurrent request to an endpoint and it will show you detailed analysis of time taken to complete all the requests.
+Strainbot is an API Performance Testing and Analysis Tool. Using Strainbot you can perform a number of concurrent request to an endpoint and it will show you detailed analysis of time taken to complete all the requests.
 Basic functionalities are ready to use but it is a work under progress, so some functionalities are not yet implemented.
 
 **Batch mode is still under development**
